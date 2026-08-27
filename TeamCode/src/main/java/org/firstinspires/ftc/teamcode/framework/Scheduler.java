@@ -51,15 +51,15 @@ public final class Scheduler {
 
         for (Command command : selectedCommands) {
             switch (command.state) {
-                case Command.State.PENDING:
+                case PENDING:
                     command.start();
                     pendingCommands.add(command);
                     break;
-                case Command.State.RUNNING:
+                case RUNNING:
                     command.update();
                     pendingCommands.add(command);
                     break;
-                case Command.State.FINISHED:
+                case FINISHED:
                     command.end(false);
                     break;
             }
@@ -67,12 +67,12 @@ public final class Scheduler {
 
         for (Command command : rejectedCommands) {
             switch (command.state) {
-                case Command.State.PENDING:
+                case PENDING:
                     break;
-                case Command.State.RUNNING:
+                case RUNNING:
                     command.end(true);
                     break;
-                case Command.State.FINISHED:
+                case FINISHED:
                     command.end(false);
                     break;
             }

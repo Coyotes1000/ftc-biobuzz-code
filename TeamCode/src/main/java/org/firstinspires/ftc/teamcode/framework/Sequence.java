@@ -28,13 +28,13 @@ public class Sequence extends Command{
     public void update () {
 
         switch (sequence.get(index).state) {
-            case Command.State.PENDING:
+            case PENDING:
                 sequence.get(index).start();
                 break;
-            case Command.State.RUNNING:
+            case RUNNING:
                 sequence.get(index).update();
                 break;
-            case Command.State.FINISHED:
+            case FINISHED:
                 sequence.get(index).end(false);
                 index++;
                 break;
