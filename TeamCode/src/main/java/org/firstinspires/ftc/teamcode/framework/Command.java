@@ -1,35 +1,27 @@
 package org.firstinspires.ftc.teamcode.framework;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Set;
 import java.util.Collections;
-
+import java.util.HashSet;
 
 public class Command {
-
-    public List<Subsystem> requirements = new ArrayList<>();
-
-    public Integer priority = 0;
+    protected Set<Subsystem> requirements = new HashSet<>(4);
+    
+    protected int priority = 0;
 
     public enum State {
-        PENDING,
-        RUNNING,
-        FINISHED
+        PENDING, RUNNING, FINISHED
     }
 
-    public State state = State.PENDING;
+    protected State state = State.PENDING;
 
-    public Command () {
+    public Command () {}
 
-    }
-
-    public void setRequirements (Subsystem... subsystems) {
-        requirements.clear();
+    public void addRequirements (Subsystem... subsystems) {
         Collections.addAll(requirements, subsystems);
     }
 
-    public void setRequirements (List<Subsystem> subsystems) {
-        requirements.clear();
+    public void addRequirements (Set<Subsystem> subsystems) {
         requirements.addAll(subsystems);
     }
 
@@ -37,12 +29,15 @@ public class Command {
         state = State.RUNNING;
     }
 
-    public void update () {
+    public void update () {}
 
+    public void end (boolean interrupted) {}
+
+    public State getState () {
+        return state;
     }
 
-    public void end (Boolean interrupted) {
-
+    public int getPriority () {
+        return priority;
     }
-    
 }

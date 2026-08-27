@@ -1,53 +1,49 @@
 package org.firstinspires.ftc.teamcode.framework;
 
 import java.util.List;
+import java.util.Set;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 
 public final class Scheduler {
-
     private static volatile Scheduler instance = null;
 
-    private final Map<Subsystem, Integer> priorityMap = new HashMap<>();
+    private final List<Command> incomingCommands = new ArrayList<>(30);
+    private final List<Command> pendingCommands = new ArrayList<>(30);
 
-    private final List<Command> selectedCommands = new ArrayList<>();
-    private final List<Command> pendingCommands = new ArrayList<>();
-    private final List<Command> rejectedCommands = new ArrayList<>();
+    private final List<Command> selectedCommands = new ArrayList<>(10);
+    private final List<Command> rejectedCommands = new ArrayList<>(10);
 
-    private Scheduler () {
+    private final Set<Subsystem> activeSubsystems = new HashSet<>(8);
 
+    private final Comparator<Command> comparison = Comparator.comparingInt(Command::getPriority).thenComparing(Command::getState).reversed();
+
+    private Scheduler () {}
+
+    public synchronized void schedule (Command command) {
+        incomingCommands.add(command);
     }
 
-    public void schedule (Command command) {
-        pendingCommands.add(command);
-    }
+    public synchronized void run () {
+        pendingCommands.addAll(incomingCommands);
+        incomingCommands.clear();
 
-    public void run () {
-        
-        pendingCommands.sort((a,b) -> Integer.compare(a.priority, b.priority));
-
-        priorityMap.clear();
+        pendingCommands.sort(comparison);
+        activeSubsystems.clear();
 
         for (Command command : pendingCommands) {
-            for (Subsystem requirement : command.requirements) {
-                priorityMap.put(requirement, command.priority);
+            if (Collections.disjoint(command.requirements, activeSubsystems)) {
+                selectedCommands.add(command);
+                activeSubsystems.addAll(command.requirements);
+            } else {
+                rejectedCommands.add(command);
             }
-        }
-
-        selectionLoop:
-        for (Command command : pendingCommands) {
-            for (Subsystem requirement : command.requirements) {
-                if (command.priority < priorityMap.get(requirement)) {
-                    rejectedCommands.add(command);
-                    continue selectionLoop;
-                }
-            }
-
-            selectedCommands.add(command);
         }
 
         pendingCommands.clear();
+        activeSubsystems.clear();
 
         for (Command command : selectedCommands) {
             switch (command.state) {
@@ -82,15 +78,17 @@ public final class Scheduler {
         rejectedCommands.clear();
     }
 
-    public void clear () {
-        priorityMap.clear();
-        selectedCommands.clear();
+    public synchronized void clear () {
+        incomingCommands.clear();
         pendingCommands.clear();
+
+        selectedCommands.clear();
         rejectedCommands.clear();
+
+        activeSubsystems.clear();
     }
 
     public static Scheduler getInstance () {
-
         if (instance == null) {
             synchronized (Scheduler.class) {
                 if (instance == null) {
@@ -101,5 +99,4 @@ public final class Scheduler {
 
         return instance;
     }
-    
 }
