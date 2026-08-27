@@ -23,13 +23,18 @@ public class Command {
 
     }
 
-    private void setRequirements (Subsystem... subsystems) {
+    public void setRequirements (Subsystem... subsystems) {
         requirements.clear();
         Collections.addAll(requirements, subsystems);
     }
 
-    public void start () {
+    public void setRequirements (List<Subsystem> subsystems) {
+        requirements.clear();
+        requirements.addAll(subsystems);
+    }
 
+    public void start () {
+        state = State.RUNNING;
     }
 
     public void update () {
