@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.Collections;
 import java.util.HashSet;
 
-public class Command {
+public abstract class Command {
     protected Set<Subsystem> requirements = new HashSet<>(4);
     
     protected int priority = 0;
