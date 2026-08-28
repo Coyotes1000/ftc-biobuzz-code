@@ -45,11 +45,27 @@ public final class Scheduler {
         pendingCommands.clear();
         activeSubsystems.clear();
 
+        for (Command command : rejectedCommands) {
+            switch (command.state) {
+                case PENDING:
+                    break;
+                case RUNNING:
+                    command.end(true);
+                    command.requirements.forEach(Subsystem::setIdle);
+                    break;
+                case FINISHED:
+                    command.end(false);
+                    command.requirements.forEach(Subsystem::setIdle);
+                    break;
+            }
+        }
+
         for (Command command : selectedCommands) {
             switch (command.state) {
                 case PENDING:
                     command.start();
                     pendingCommands.add(command);
+                    command.requirements.forEach(Subsystem::setBusy);
                     break;
                 case RUNNING:
                     command.update();
@@ -57,19 +73,7 @@ public final class Scheduler {
                     break;
                 case FINISHED:
                     command.end(false);
-                    break;
-            }
-        }
-
-        for (Command command : rejectedCommands) {
-            switch (command.state) {
-                case PENDING:
-                    break;
-                case RUNNING:
-                    command.end(true);
-                    break;
-                case FINISHED:
-                    command.end(false);
+                    command.requirements.forEach(Subsystem::setIdle);
                     break;
             }
         }
