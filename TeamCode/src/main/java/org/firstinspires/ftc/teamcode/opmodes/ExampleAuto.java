@@ -14,7 +14,7 @@ public class ExampleAuto extends BaseOpMode {
 
     @Override
     public void onStart () {
-        Scheduler.getInstance().schedule(new Sequence(
+        scheduler.schedule(new Sequence(
             new ExampleCommand(),
             new ExampleCommand()
         ));

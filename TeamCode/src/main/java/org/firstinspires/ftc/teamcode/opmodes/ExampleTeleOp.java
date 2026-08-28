@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import org.firstinspires.ftc.teamcode.commands.ExampleCommand;
 import org.firstinspires.ftc.teamcode.framework.BaseOpMode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -13,7 +14,9 @@ public class ExampleTeleOp extends BaseOpMode {
 
     @Override
     public void gameUpdate () {
-        // Schedule commands based on inputs.
+        if (!robot.exampleSubsystem.isBusy()){
+            scheduler.schedule(new ExampleCommand());
+        }
     }
 
 }
