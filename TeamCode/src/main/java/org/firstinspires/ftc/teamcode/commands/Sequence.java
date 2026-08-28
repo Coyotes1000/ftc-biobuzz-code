@@ -1,4 +1,6 @@
-package org.firstinspires.ftc.teamcode.framework;
+package org.firstinspires.ftc.teamcode.commands;
+
+import org.firstinspires.ftc.teamcode.framework.Command;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -7,7 +9,7 @@ import java.util.Collections;
 public class Sequence extends Command {
     private List<Command> sequence = new ArrayList<>();
 
-    protected int index = 0;
+    public int index = 0;
 
     public Sequence (Command... commands) {
         Collections.addAll(sequence, commands);

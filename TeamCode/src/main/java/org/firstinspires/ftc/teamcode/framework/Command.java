@@ -5,15 +5,15 @@ import java.util.Collections;
 import java.util.HashSet;
 
 public abstract class Command {
-    protected Set<Subsystem> requirements = new HashSet<>(4);
+    public Set<Subsystem> requirements = new HashSet<>(4);
     
-    protected int priority = 0;
+    public int priority = 0;
 
     public enum State {
         PENDING, RUNNING, FINISHED
     }
 
-    protected State state = State.PENDING;
+    public State state = State.PENDING;
 
     public Command () {}
 
