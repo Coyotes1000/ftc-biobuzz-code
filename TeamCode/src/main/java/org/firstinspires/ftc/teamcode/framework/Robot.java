@@ -5,17 +5,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public final class Robot {
     private static volatile Robot instance = null;
 
-    private HardwareMap hardware;
+    private HardwareMap hardwareMap;
 
     private Robot () {}
 
     public void init (HardwareMap hardwareMap) {
-        hardware = hardwareMap;
+        this.hardwareMap = hardwareMap;
     }
 
-    public void run () {
-
-    }
+    public void run () {}
 
     public static Robot getInstance () {
         if (instance == null) {
@@ -28,4 +26,4 @@ public final class Robot {
 
         return instance;
     }
-} 
+}
