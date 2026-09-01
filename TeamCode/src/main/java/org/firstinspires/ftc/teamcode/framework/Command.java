@@ -1,20 +1,19 @@
 package org.firstinspires.ftc.teamcode.framework;
 
-import java.util.Set;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
 
 public abstract class Command {
     public final Set<Subsystem> requirements = new HashSet<>(4);
 
+    protected int priority = 0;
+
     public enum State {PENDING, RUNNING, FINISHED}
     protected State state = State.PENDING;
 
-    protected int priority = 0;
-
     public Command (Subsystem... subsystems) {
-        for (Subsystem subsystem : subsystems) {
-            requirements.add(subsystem);
-        }
+        Collections.addAll(requirements, subsystems);
     }
 
     protected void start () {}
@@ -26,13 +25,16 @@ public abstract class Command {
             case PENDING:
                 start();
                 requirements.forEach(Subsystem::setBusy);
+                break;
             case RUNNING:
                 update();
+                break;
             case FINISHED:
                 end(false);
                 requirements.forEach(Subsystem::setIdle);
                 break;
         }
+
         return state;
     }
 
@@ -49,6 +51,7 @@ public abstract class Command {
                 requirements.forEach(Subsystem::setIdle);
                 break;
         }
+        
         return state;
     }
 

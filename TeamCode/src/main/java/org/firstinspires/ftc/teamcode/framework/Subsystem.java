@@ -1,31 +1,43 @@
 package org.firstinspires.ftc.teamcode.framework;
 
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
 public abstract class Subsystem {
-    public final HardwareMap hardwareMap;
+    public enum State {IDLE, BUSY}
+    protected State state = State.IDLE;
 
-    public enum State {
-        IDLE, BUSY
-    }
-
-    public State state = State.IDLE;
+    private Runnable onIdle;
+    private Runnable onBusy;
     
-    public Subsystem (HardwareMap hardwareMap) {
-        this.hardwareMap = hardwareMap;
+    public Subsystem () {}
+
+    public void setOnIdle (Runnable callback) {
+        onIdle = callback;
     }
 
-    public void update () {}
+    public void setOnBusy (Runnable callback) {
+        onBusy = callback;
+    }
 
     public void setIdle () {
-        state = State.IDLE;
+        if (state != State.IDLE) {
+            state = State.IDLE;
+            
+            if (onIdle != null) {
+                onIdle.run();
+            }
+        }
     }
 
     public void setBusy () {
-        state = State.BUSY;
+        if (state != State.BUSY){
+            state = State.BUSY;
+
+            if (onBusy != null) {
+                onBusy.run();
+            }
+        }
     }
 
-    public boolean isBusy () {
-        return state == State.BUSY;
+    public State getState () {
+        return state;
     }
 }
