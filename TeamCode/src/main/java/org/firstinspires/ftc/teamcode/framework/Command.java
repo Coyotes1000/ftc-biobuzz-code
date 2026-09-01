@@ -1,37 +1,56 @@
 package org.firstinspires.ftc.teamcode.framework;
 
 import java.util.Set;
-import java.util.Collections;
 import java.util.HashSet;
 
 public abstract class Command {
-    public Set<Subsystem> requirements = new HashSet<>(4);
-    
-    public int priority = 0;
+    public final Set<Subsystem> requirements = new HashSet<>(4);
 
-    public enum State {
-        PENDING, RUNNING, FINISHED
+    public enum State {PENDING, RUNNING, FINISHED}
+    protected State state = State.PENDING;
+
+    protected int priority = 0;
+
+    public Command (Subsystem... subsystems) {
+        for (Subsystem subsystem : subsystems) {
+            requirements.add(subsystem);
+        }
     }
 
-    public State state = State.PENDING;
+    protected void start () {}
+    protected void update () {}
+    protected void end (boolean interrupted) {}
 
-    public Command () {}
-
-    public void addRequirements (Subsystem... subsystems) {
-        Collections.addAll(requirements, subsystems);
+    public State run () {
+        switch (state) {
+            case PENDING:
+                start();
+                requirements.forEach(Subsystem::setBusy);
+            case RUNNING:
+                update();
+            case FINISHED:
+                end(false);
+                requirements.forEach(Subsystem::setIdle);
+                break;
+        }
+        return state;
     }
 
-    public void addRequirements (Set<Subsystem> subsystems) {
-        requirements.addAll(subsystems);
+    public State cancel () {
+        switch (state) {
+            case PENDING:
+                break;
+            case RUNNING:
+                end(true);
+                requirements.forEach(Subsystem::setIdle);
+                break;
+            case FINISHED:
+                end(false);
+                requirements.forEach(Subsystem::setIdle);
+                break;
+        }
+        return state;
     }
-
-    public void start () {
-        state = State.RUNNING;
-    }
-
-    public void update () {}
-
-    public void end (boolean interrupted) {}
 
     public State getState () {
         return state;
