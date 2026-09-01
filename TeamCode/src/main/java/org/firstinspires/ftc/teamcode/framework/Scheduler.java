@@ -14,18 +14,17 @@ public final class Scheduler {
     private final List<Command> selectedCommands = new ArrayList<>(32);
     private final List<Command> rejectedCommands = new ArrayList<>(32);
 
-    private static final Comparator<Command> COMPARATOR = Comparator
-        .comparingInt(Command::getPriority)
-        .thenComparing(Command::getState)
-        .reversed();
+    private static final Comparator<Command> COMPARATOR = Comparator.comparingInt(Command::getPriority)
+            .thenComparing(Command::getState).reversed();
 
-    public Scheduler () {}
+    public Scheduler() {
+    }
 
-    public synchronized void schedule (Command command) {
+    public synchronized void schedule(Command command) {
         pendingCommands.add(command);
     }
 
-    public synchronized void run () {
+    public synchronized void run() {
         pendingCommands.sort(COMPARATOR);
         claimedSubsystems.clear();
 
@@ -40,7 +39,7 @@ public final class Scheduler {
         rejectedCommands.clear();
     }
 
-    public synchronized void clear () {
+    public synchronized void clear() {
         claimedSubsystems.clear();
 
         pendingCommands.clear();
@@ -49,32 +48,32 @@ public final class Scheduler {
         rejectedCommands.clear();
     }
 
-    private boolean hasSubsystemConflict (Command command) {
+    private boolean hasSubsystemConflict(Command command) {
         return !Collections.disjoint(command.requirements, claimedSubsystems);
     }
 
-    private void filterPendingCommands () {
+    private void filterPendingCommands() {
         for (Command command : pendingCommands) {
             if (hasSubsystemConflict(command)) {
                 rejectedCommands.add(command);
                 continue;
             }
-            
+
             selectedCommands.add(command);
             claimedSubsystems.addAll(command.requirements);
         }
     }
 
-    private void cancelRejectedCommands () {
+    private void cancelRejectedCommands() {
         for (Command command : rejectedCommands) {
             command.cancel();
         }
     }
 
-    private void runSelectedCommands () {
+    private void runSelectedCommands() {
         for (Command command : selectedCommands) {
             Command.State state = command.run();
-            
+
             if (state != Command.State.FINISHED) {
                 schedule(command);
             }

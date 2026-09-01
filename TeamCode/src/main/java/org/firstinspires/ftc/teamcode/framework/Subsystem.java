@@ -1,34 +1,38 @@
 package org.firstinspires.ftc.teamcode.framework;
 
 public abstract class Subsystem {
-    public enum State {IDLE, BUSY}
+    public enum State {
+        IDLE, BUSY
+    }
+
     protected State state = State.IDLE;
 
     private Runnable onIdle;
     private Runnable onBusy;
-    
-    public Subsystem () {}
 
-    public void setOnIdle (Runnable callback) {
+    public Subsystem() {
+    }
+
+    public void setOnIdle(Runnable callback) {
         onIdle = callback;
     }
 
-    public void setOnBusy (Runnable callback) {
+    public void setOnBusy(Runnable callback) {
         onBusy = callback;
     }
 
-    public void setIdle () {
+    public void setIdle() {
         if (state != State.IDLE) {
             state = State.IDLE;
-            
+
             if (onIdle != null) {
                 onIdle.run();
             }
         }
     }
 
-    public void setBusy () {
-        if (state != State.BUSY){
+    public void setBusy() {
+        if (state != State.BUSY) {
             state = State.BUSY;
 
             if (onBusy != null) {
@@ -37,7 +41,7 @@ public abstract class Subsystem {
         }
     }
 
-    public State getState () {
+    public State getState() {
         return state;
     }
 }

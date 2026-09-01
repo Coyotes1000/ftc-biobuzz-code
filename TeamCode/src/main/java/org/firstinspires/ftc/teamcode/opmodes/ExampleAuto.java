@@ -13,11 +13,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 public class ExampleAuto extends BaseOpMode {
 
     @Override
-    public void onStart () {
-        scheduler.schedule(new Sequence(
-            new ExampleCommand(),
-            new ExampleCommand()
-        ));
+    public void onStart() {
+        scheduler.schedule(new Sequence(new ExampleCommand(), new ExampleCommand()));
     }
 
 }

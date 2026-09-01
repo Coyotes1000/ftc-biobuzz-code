@@ -10,11 +10,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @Disabled
 public class ExampleTeleOp extends BaseOpMode {
 
-    public ExampleTeleOp () {}
+    public ExampleTeleOp() {
+    }
 
     @Override
-    public void gameUpdate () {
-        if (!robot.exampleSubsystem.isBusy()){
+    public void gameUpdate() {
+        if (!robot.exampleSubsystem.isBusy()) {
             scheduler.schedule(new ExampleCommand());
         }
     }

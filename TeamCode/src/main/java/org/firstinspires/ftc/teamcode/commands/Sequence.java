@@ -1,17 +1,16 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import org.firstinspires.ftc.teamcode.framework.Command;
-
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import org.firstinspires.ftc.teamcode.framework.Command;
 
 public class Sequence extends Command {
     private List<Command> sequence = new ArrayList<>();
 
     public int index = 0;
 
-    public Sequence (Command... commands) {
+    public Sequence(Command... commands) {
         Collections.addAll(sequence, commands);
 
         for (Command command : sequence) {
@@ -20,18 +19,18 @@ public class Sequence extends Command {
     }
 
     @Override
-    public void update () {
+    public void update() {
         switch (sequence.get(index).state) {
-            case PENDING:
-                sequence.get(index).start();
-                break;
-            case RUNNING:
-                sequence.get(index).update();
-                break;
-            case FINISHED:
-                sequence.get(index).end(false);
-                index++;
-                break;
+        case PENDING:
+            sequence.get(index).start();
+            break;
+        case RUNNING:
+            sequence.get(index).update();
+            break;
+        case FINISHED:
+            sequence.get(index).end(false);
+            index++;
+            break;
         }
 
         if (index >= sequence.size()) {
@@ -40,7 +39,7 @@ public class Sequence extends Command {
     }
 
     @Override
-    public void end (boolean interrupted) {
+    public void end(boolean interrupted) {
         sequence.get(index).end(interrupted);
     }
 }
