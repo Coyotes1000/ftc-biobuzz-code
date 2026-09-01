@@ -14,7 +14,7 @@ public final class Scheduler {
     private final List<Command> selectedCommands = new ArrayList<>(32);
     private final List<Command> rejectedCommands = new ArrayList<>(32);
 
-    private final Comparator<Command> comparison = Comparator
+    private static final Comparator<Command> COMPARATOR = Comparator
         .comparingInt(Command::getPriority)
         .thenComparing(Command::getState)
         .reversed();
@@ -26,7 +26,7 @@ public final class Scheduler {
     }
 
     public synchronized void run () {
-        pendingCommands.sort(comparison);
+        pendingCommands.sort(COMPARATOR);
         claimedSubsystems.clear();
 
         filterPendingCommands();
