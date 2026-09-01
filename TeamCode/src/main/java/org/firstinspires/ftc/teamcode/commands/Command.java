@@ -1,8 +1,10 @@
-package org.firstinspires.ftc.teamcode.framework;
+package org.firstinspires.ftc.teamcode.commands;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
 
 public abstract class Command {
 

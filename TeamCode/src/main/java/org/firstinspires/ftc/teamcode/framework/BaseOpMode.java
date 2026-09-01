@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.framework;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public abstract class BaseOpMode extends LinearOpMode {
-    
+
     protected Robot robot;
 
     public BaseOpMode() {
@@ -26,7 +26,7 @@ public abstract class BaseOpMode extends LinearOpMode {
 
         while (opModeIsActive()) {
             robot.updateSubsystems();
-            gameUpdate();
+            mainUpdate();
             robot.updateCommands();
             robot.updateTelemetry(telemetry);
         }
@@ -43,7 +43,7 @@ public abstract class BaseOpMode extends LinearOpMode {
     protected void onStart() {
     }
 
-    protected void gameUpdate() {
+    protected void mainUpdate() {
     }
 
     protected void onEnd() {

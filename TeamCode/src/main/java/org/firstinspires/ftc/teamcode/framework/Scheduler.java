@@ -7,6 +7,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.firstinspires.ftc.teamcode.commands.Command;
+import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
+
 public final class Scheduler {
 
     private static final Comparator<Command> COMPARATOR = Comparator.comparingInt(Command::getPriority)
