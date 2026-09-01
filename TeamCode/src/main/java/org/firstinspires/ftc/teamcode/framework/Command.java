@@ -5,27 +5,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class Command {
-    public final Set<Subsystem> requirements = new HashSet<>(4);
-
-    protected int priority = 0;
 
     public enum State {
         PENDING, RUNNING, FINISHED
     }
 
+    public final Set<Subsystem> requirements = new HashSet<>(4);
+
     protected State state = State.PENDING;
+    protected int priority = 0;
 
     public Command(Subsystem... subsystems) {
         Collections.addAll(requirements, subsystems);
-    }
-
-    protected void start() {
-    }
-
-    protected void update() {
-    }
-
-    protected void end(boolean interrupted) {
     }
 
     public State run() {
@@ -69,5 +60,14 @@ public abstract class Command {
 
     public int getPriority() {
         return priority;
+    }
+
+    protected void start() {
+    }
+
+    protected void update() {
+    }
+
+    protected void end(boolean interrupted) {
     }
 }

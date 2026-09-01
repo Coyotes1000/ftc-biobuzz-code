@@ -8,14 +8,15 @@ import java.util.List;
 import java.util.Set;
 
 public final class Scheduler {
+
+    private static final Comparator<Command> COMPARATOR = Comparator.comparingInt(Command::getPriority)
+            .thenComparing(Command::getState).reversed();
+
     private final Set<Subsystem> claimedSubsystems = new HashSet<>(16);
 
     private final List<Command> pendingCommands = new ArrayList<>(32);
     private final List<Command> selectedCommands = new ArrayList<>(32);
     private final List<Command> rejectedCommands = new ArrayList<>(32);
-
-    private static final Comparator<Command> COMPARATOR = Comparator.comparingInt(Command::getPriority)
-            .thenComparing(Command::getState).reversed();
 
     public Scheduler() {
     }

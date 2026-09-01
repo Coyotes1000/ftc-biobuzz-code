@@ -3,49 +3,49 @@ package org.firstinspires.ftc.teamcode.framework;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public abstract class BaseOpMode extends LinearOpMode {
-    public Robot robot = Robot.getInstance();
-    public Scheduler scheduler = Scheduler.getInstance();
+    
+    protected Robot robot;
 
     public BaseOpMode() {
     }
 
-    public void onInit() {
-    }
-
-    public void initUpdate() {
-    }
-
-    public void onStart() {
-    }
-
-    public void gameUpdate() {
-    }
-
-    public void onEnd() {
-    }
-
     @Override
     public final void runOpMode() {
-        robot.init(hardwareMap);
+        robot = new Robot(hardwareMap);
+        onInit();
 
         while (opModeInInit()) {
-            robot.run();
+            robot.updateSubsystems();
             initUpdate();
-            scheduler.run();
-            telemetry.update();
+            robot.updateCommands();
+            robot.updateTelemetry(telemetry);
         }
 
-        Scheduler.getInstance().clear();
+        robot.clearCommands();
         onStart();
 
         while (opModeIsActive()) {
-            robot.run();
+            robot.updateSubsystems();
             gameUpdate();
-            scheduler.run();
-            telemetry.update();
+            robot.updateCommands();
+            robot.updateTelemetry(telemetry);
         }
 
         onEnd();
-        Scheduler.getInstance().clear();
+    }
+
+    protected void onInit() {
+    }
+
+    protected void initUpdate() {
+    }
+
+    protected void onStart() {
+    }
+
+    protected void gameUpdate() {
+    }
+
+    protected void onEnd() {
     }
 }
