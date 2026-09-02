@@ -6,8 +6,7 @@ public abstract class BaseOpMode extends LinearOpMode {
 
     protected Robot robot;
 
-    public BaseOpMode() {
-    }
+    public BaseOpMode() {}
 
     @Override
     public final void runOpMode() {
@@ -34,18 +33,13 @@ public abstract class BaseOpMode extends LinearOpMode {
         onEnd();
     }
 
-    protected void onInit() {
-    }
+    protected void onInit() {}
 
-    protected void initUpdate() {
-    }
+    protected void initUpdate() {}
 
-    protected void onStart() {
-    }
+    protected void onStart() {}
 
-    protected void mainUpdate() {
-    }
+    protected void mainUpdate() {}
 
-    protected void onEnd() {
-    }
+    protected void onEnd() {}
 }

@@ -8,11 +8,9 @@ public final class Robot {
 
     private final Scheduler scheduler = new Scheduler();
 
-    public Robot(HardwareMap hardwareMap) {
-    }
+    public Robot(HardwareMap hardwareMap) {}
 
-    public void updateSubsystems() {
-    }
+    public void updateSubsystems() {}
 
     public void updateCommands() {
         scheduler.run();
@@ -22,6 +20,5 @@ public final class Robot {
         scheduler.clear();
     }
 
-    public void updateTelemetry(Telemetry telemetry) {
-    }
+    public void updateTelemetry(Telemetry telemetry) {}
 }

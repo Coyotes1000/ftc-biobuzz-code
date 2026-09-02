@@ -20,8 +20,7 @@ public final class Scheduler {
     private final List<Command> selectedCommands = new ArrayList<>(32);
     private final List<Command> rejectedCommands = new ArrayList<>(32);
 
-    public Scheduler() {
-    }
+    public Scheduler() {}
 
     public synchronized void schedule(Command command) {
         pendingCommands.add(command);
@@ -57,7 +56,7 @@ public final class Scheduler {
                 return true;
             }
         }
-        
+
         return false;
     }
 
