@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-public class Sequence extends CommandGroup {
+public class SequentialCommandGroup extends CommandGroup {
 
     protected int index = 0;
 
-    public Sequence(Command... commands) {
+    public SequentialCommandGroup(Command... commands) {
         super(commands);
     }
 
