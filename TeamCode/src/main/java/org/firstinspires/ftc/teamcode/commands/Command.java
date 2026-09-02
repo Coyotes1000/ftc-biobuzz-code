@@ -15,6 +15,7 @@ public abstract class Command {
     public final Set<Subsystem> requirements = new HashSet<>();
 
     protected State state = State.PENDING;
+
     protected int priority = 0;
 
     public Command(Subsystem... subsystems) {
