@@ -2,17 +2,14 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 public abstract class Subsystem {
 
-    public enum State {
-        IDLE, BUSY
-    }
+    public enum State { IDLE, BUSY }
 
     protected State state = State.IDLE;
 
     private Runnable onIdle;
     private Runnable onBusy;
 
-    public Subsystem() {
-    }
+    public Subsystem() {}
 
     public void setIdle() {
         if (state != State.IDLE) {

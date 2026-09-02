@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.framework;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -12,7 +11,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
 
 public final class Scheduler {
 
-    private static final Comparator<Command> COMPARATOR = Comparator.comparingInt(Command::getPriority)
+    private static final Comparator<Command> COMPARATOR = Comparator.comparing(Command::getPriority)
             .thenComparing(Command::getState).reversed();
 
     private final Set<Subsystem> claimedSubsystems = new HashSet<>(16);
@@ -53,7 +52,13 @@ public final class Scheduler {
     }
 
     private boolean hasSubsystemConflict(Command command) {
-        return !Collections.disjoint(command.requirements, claimedSubsystems);
+        for (Subsystem subsystem : command.requirements) {
+            if (claimedSubsystems.contains(subsystem)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     private void filterPendingCommands() {
@@ -64,7 +69,10 @@ public final class Scheduler {
             }
 
             selectedCommands.add(command);
-            claimedSubsystems.addAll(command.requirements);
+
+            for (Subsystem subsystem : command.requirements) {
+                claimedSubsystems.add(subsystem);
+            }
         }
     }
 
