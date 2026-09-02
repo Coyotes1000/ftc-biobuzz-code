@@ -27,8 +27,11 @@ public abstract class Command {
         case PENDING:
             start();
             requirements.forEach(Subsystem::setBusy);
+            state = State.RUNNING;
+            break;
         case RUNNING:
             update();
+            break;
         case FINISHED:
             end(false);
             requirements.forEach(Subsystem::setIdle);
