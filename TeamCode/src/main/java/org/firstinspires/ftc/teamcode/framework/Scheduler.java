@@ -76,9 +76,9 @@ public final class Scheduler {
 
     private void runSelectedCommands() {
         for (Command command : selectedCommands) {
-            Command.State state = command.run();
+            Command.State currentState = command.run();
 
-            if (state != Command.State.FINISHED) {
+            if (currentState != Command.State.FINISHED) {
                 schedule(command);
             }
         }

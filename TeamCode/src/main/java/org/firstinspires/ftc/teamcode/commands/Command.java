@@ -12,7 +12,7 @@ public abstract class Command {
         PENDING, RUNNING, FINISHED
     }
 
-    public final Set<Subsystem> requirements = new HashSet<>(4);
+    public final Set<Subsystem> requirements = new HashSet<>();
 
     protected State state = State.PENDING;
     protected int priority = 0;
@@ -26,10 +26,8 @@ public abstract class Command {
         case PENDING:
             start();
             requirements.forEach(Subsystem::setBusy);
-            break;
         case RUNNING:
             update();
-            break;
         case FINISHED:
             end(false);
             requirements.forEach(Subsystem::setIdle);

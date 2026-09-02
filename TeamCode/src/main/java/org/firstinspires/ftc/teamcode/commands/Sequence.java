@@ -2,34 +2,34 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
 
 public class Sequence extends Command {
-    private List<Command> sequence = new ArrayList<>();
+    private final List<Command> sequence = new ArrayList<>();
 
-    public int index = 0;
+    protected int index = 0;
 
     public Sequence(Command... commands) {
-        Collections.addAll(sequence, commands);
+        super(collectRequirements(commands));
 
-        for (Command command : sequence) {
-            addRequirements(command.requirements);
-        }
+        Collections.addAll(sequence, commands);
     }
 
     @Override
     public void update() {
-        switch (sequence.get(index).state) {
-        case PENDING:
-            sequence.get(index).start();
-            break;
-        case RUNNING:
-            sequence.get(index).update();
-            break;
-        case FINISHED:
-            sequence.get(index).end(false);
+        if (index >= sequence.size()) {
+            state = State.FINISHED;
+            return;
+        }
+
+        Command.State currentState = sequence.get(index).run();
+
+        if (currentState == Command.State.FINISHED) {
             index++;
-            break;
         }
 
         if (index >= sequence.size()) {
@@ -39,6 +39,18 @@ public class Sequence extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        sequence.get(index).end(interrupted);
+        if (interrupted && index < sequence.size()) {
+            sequence.get(index).cancel();
+        }
+    }
+
+    private static Subsystem[] collectRequirements(Command... commands) {
+        Set<Subsystem> totalRequirements = new HashSet<>();
+
+        for (Command command : commands) {
+            totalRequirements.addAll(command.requirements);
+        }
+
+        return totalRequirements.toArray(new Subsystem[0]);
     }
 }
