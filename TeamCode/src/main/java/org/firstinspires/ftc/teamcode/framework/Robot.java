@@ -1,35 +1,29 @@
 package org.firstinspires.ftc.teamcode.framework;
 
-import org.firstinspires.ftc.teamcode.subsystems.ExampleSubsystem;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.commands.Command;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public final class Robot {
-    private static volatile Robot instance = null;
 
-    private HardwareMap hardwareMap;
+    private final Scheduler scheduler = new Scheduler();
 
-    public ExampleSubsystem exampleSubsystem;
+    public Robot(HardwareMap hardwareMap) {}
 
-    private Robot () {}
+    public void updateSubsystems() {}
 
-    public void init (HardwareMap hardwareMap) {
-        this.hardwareMap = hardwareMap;
-
-        exampleSubsystem = new ExampleSubsystem(hardwareMap);
+    public void scheduleCommand(Command command) {
+        scheduler.schedule(command);
     }
 
-    public void run () {}
-
-    public static Robot getInstance () {
-        if (instance == null) {
-            synchronized (Scheduler.class) {
-                if (instance == null) {
-                    instance = new Robot();
-                }
-            }
-        }
-
-        return instance;
+    public void updateCommands() {
+        scheduler.run();
     }
+
+    public void clearCommands() {
+        scheduler.clear();
+    }
+
+    public void updateTelemetry(Telemetry telemetry) {}
 }

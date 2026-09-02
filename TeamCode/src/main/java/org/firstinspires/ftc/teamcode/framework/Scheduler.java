@@ -1,106 +1,93 @@
 package org.firstinspires.ftc.teamcode.framework;
 
-import java.util.List;
-import java.util.Set;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.firstinspires.ftc.teamcode.commands.Command;
+import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
 
 public final class Scheduler {
-    private static volatile Scheduler instance = null;
 
-    private final List<Command> incomingCommands = new ArrayList<>(30);
-    private final List<Command> pendingCommands = new ArrayList<>(30);
+    private static final Comparator<Command> COMPARATOR = Comparator.comparing(Command::getPriority)
+            .thenComparing(Command::getState).reversed();
 
-    private final List<Command> selectedCommands = new ArrayList<>(10);
-    private final List<Command> rejectedCommands = new ArrayList<>(10);
+    private final Set<Subsystem> claimedSubsystems = new HashSet<>(16);
 
-    private final Set<Subsystem> activeSubsystems = new HashSet<>(8);
+    private final List<Command> pendingCommands = new ArrayList<>(32);
+    private final List<Command> selectedCommands = new ArrayList<>(32);
+    private final List<Command> rejectedCommands = new ArrayList<>(32);
 
-    private final Comparator<Command> comparison = Comparator.comparingInt(Command::getPriority).thenComparing(Command::getState).reversed();
+    public Scheduler() {}
 
-    private Scheduler () {}
-
-    public synchronized void schedule (Command command) {
-        incomingCommands.add(command);
+    public synchronized void schedule(Command command) {
+        pendingCommands.add(command);
     }
 
-    public synchronized void run () {
-        pendingCommands.addAll(incomingCommands);
-        incomingCommands.clear();
+    public synchronized void run() {
+        pendingCommands.sort(COMPARATOR);
+        claimedSubsystems.clear();
 
-        pendingCommands.sort(comparison);
-        activeSubsystems.clear();
+        filterPendingCommands();
 
+        pendingCommands.clear();
+
+        cancelRejectedCommands();
+        runSelectedCommands();
+
+        selectedCommands.clear();
+        rejectedCommands.clear();
+    }
+
+    public synchronized void clear() {
+        claimedSubsystems.clear();
+
+        pendingCommands.clear();
+
+        selectedCommands.clear();
+        rejectedCommands.clear();
+    }
+
+    private boolean hasSubsystemConflict(Command command) {
+        for (Subsystem subsystem : command.requirements) {
+            if (claimedSubsystems.contains(subsystem)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void filterPendingCommands() {
         for (Command command : pendingCommands) {
-            if (Collections.disjoint(command.requirements, activeSubsystems)) {
-                selectedCommands.add(command);
-                activeSubsystems.addAll(command.requirements);
-            } else {
+            if (hasSubsystemConflict(command)) {
                 rejectedCommands.add(command);
+                continue;
+            }
+
+            selectedCommands.add(command);
+
+            for (Subsystem subsystem : command.requirements) {
+                claimedSubsystems.add(subsystem);
             }
         }
+    }
 
-        pendingCommands.clear();
-        activeSubsystems.clear();
-
+    private void cancelRejectedCommands() {
         for (Command command : rejectedCommands) {
-            switch (command.state) {
-                case PENDING:
-                    break;
-                case RUNNING:
-                    command.end(true);
-                    command.requirements.forEach(Subsystem::setIdle);
-                    break;
-                case FINISHED:
-                    command.end(false);
-                    command.requirements.forEach(Subsystem::setIdle);
-                    break;
-            }
+            command.cancel();
         }
+    }
 
+    private void runSelectedCommands() {
         for (Command command : selectedCommands) {
-            switch (command.state) {
-                case PENDING:
-                    command.start();
-                    pendingCommands.add(command);
-                    command.requirements.forEach(Subsystem::setBusy);
-                    break;
-                case RUNNING:
-                    command.update();
-                    pendingCommands.add(command);
-                    break;
-                case FINISHED:
-                    command.end(false);
-                    command.requirements.forEach(Subsystem::setIdle);
-                    break;
+            Command.State currentState = command.run();
+
+            if (currentState != Command.State.FINISHED) {
+                schedule(command);
             }
         }
-
-        selectedCommands.clear();
-        rejectedCommands.clear();
-    }
-
-    public synchronized void clear () {
-        incomingCommands.clear();
-        pendingCommands.clear();
-
-        selectedCommands.clear();
-        rejectedCommands.clear();
-
-        activeSubsystems.clear();
-    }
-
-    public static Scheduler getInstance () {
-        if (instance == null) {
-            synchronized (Scheduler.class) {
-                if (instance == null) {
-                    instance = new Scheduler();
-                }
-            }
-        }
-
-        return instance;
     }
 }
