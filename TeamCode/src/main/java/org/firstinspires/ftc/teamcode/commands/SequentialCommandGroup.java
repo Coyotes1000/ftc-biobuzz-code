@@ -4,32 +4,27 @@ public class SequentialCommandGroup extends CommandGroup {
 
     protected int index = 0;
 
-    public SequentialCommandGroup(Command... commands) {
-        super(commands);
+    public SequentialCommandGroup(Priority priority, Command... commands) {
+        super(priority, commands);
     }
 
     @Override
     public void update() {
-        if (index >= commands.size()) {
-            state = State.FINISHED;
-            return;
-        }
-
-        Command.State currentState = commands.get(index).run();
+        State currentState = commands[index].run();
 
         if (currentState == Command.State.FINISHED) {
             index++;
         }
 
-        if (index >= commands.size()) {
+        if (index >= commands.length) {
             state = State.FINISHED;
         }
     }
 
     @Override
-    public void end(boolean interrupted) {
-        if (interrupted && index < commands.size()) {
-            commands.get(index).cancel();
+    public void end() {
+        if (state == State.RUNNING) {
+            commands[index].cancel();
         }
     }
 }

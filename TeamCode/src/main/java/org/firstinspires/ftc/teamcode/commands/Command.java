@@ -1,58 +1,61 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
 
 public abstract class Command {
 
-    public enum State {
-        PENDING, RUNNING, FINISHED
-    }
+    public enum State { PENDING, RUNNING, FINISHED }
 
-    public final Set<Subsystem> requirements = new HashSet<>();
+    public enum Priority { LOW, MEDIUM, HIGH }
+
+    public final Subsystem[] requirements;
 
     protected State state = State.PENDING;
 
-    protected int priority = 0;
+    protected Priority priority = Priority.MEDIUM;
 
     public Command(Subsystem... subsystems) {
-        Collections.addAll(requirements, subsystems);
+        requirements = subsystems;
     }
 
     public State run() {
-        switch (state) {
-        case PENDING:
+        if (state == State.FINISHED) {
+            return state;
+        }
+
+        if (state == State.PENDING) {
             start();
-            requirements.forEach(Subsystem::setBusy);
+            setRequirementsBusy();
             state = State.RUNNING;
-            break;
-        case RUNNING:
+        }
+
+        if (state == State.RUNNING) {
             update();
-            break;
-        case FINISHED:
-            end(false);
-            requirements.forEach(Subsystem::setIdle);
-            break;
+        }
+
+        if (state == State.FINISHED) {
+            end();
+            setRequirementsIdle();
         }
 
         return state;
     }
 
     public State cancel() {
-        switch (state) {
-        case PENDING:
-            break;
-        case RUNNING:
-            end(true);
-            requirements.forEach(Subsystem::setIdle);
-            break;
-        case FINISHED:
-            end(false);
-            requirements.forEach(Subsystem::setIdle);
-            break;
+        if (state == State.FINISHED) {
+            return state;
+        }
+
+        if (state == State.RUNNING) {
+            end();
+            setRequirementsIdle();
+            state = State.FINISHED;
+        }
+
+        if (state == State.PENDING) {
+            end();
+            setRequirementsIdle();
+            state = State.FINISHED;
         }
 
         return state;
@@ -62,16 +65,25 @@ public abstract class Command {
         return state;
     }
 
-    public int getPriority() {
+    public Priority getPriority() {
         return priority;
     }
 
-    protected void start() {
+    protected void start() {}
+
+    protected void update() {}
+
+    protected void end() {}
+
+    private void setRequirementsBusy() {
+        for (Subsystem requirement : requirements) {
+            requirement.setBusy();
+        }
     }
 
-    protected void update() {
-    }
-
-    protected void end(boolean interrupted) {
+    private void setRequirementsIdle() {
+        for (Subsystem requirement : requirements) {
+            requirement.setIdle();
+        }
     }
 }
