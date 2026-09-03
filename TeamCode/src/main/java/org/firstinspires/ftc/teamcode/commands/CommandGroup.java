@@ -17,6 +17,15 @@ public abstract class CommandGroup extends Command {
         this.priority = priority;
     }
 
+    @Override
+    public void reset () {
+        super.reset();
+
+        for (Command command : commands) {
+            command.reset();
+        }
+    }
+
     private static Subsystem[] collectRequirements(Command... commands) {
         Set<Subsystem> totalRequirements = new HashSet<>();
 
