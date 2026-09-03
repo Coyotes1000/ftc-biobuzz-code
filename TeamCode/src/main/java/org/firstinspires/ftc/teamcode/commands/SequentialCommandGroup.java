@@ -9,7 +9,7 @@ public class SequentialCommandGroup extends CommandGroup {
     }
 
     @Override
-    public void start () {
+    public void start() {
         index = 0;
     }
 
