@@ -11,10 +11,19 @@ public abstract class CommandGroup extends Command {
 
     protected CommandGroup(Priority priority, Command... commands) {
         super(collectRequirements(commands));
-        
+
         this.commands = commands;
 
         this.priority = priority;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+
+        for (Command command : commands) {
+            command.reset();
+        }
     }
 
     private static Subsystem[] collectRequirements(Command... commands) {

@@ -6,40 +6,21 @@ public abstract class Subsystem {
 
     protected State state = State.IDLE;
 
-    private Runnable onIdle;
-    private Runnable onBusy;
-
     public Subsystem() {}
 
     public void setIdle() {
-        if (state != State.IDLE) {
-            state = State.IDLE;
-
-            if (onIdle != null) {
-                onIdle.run();
-            }
-        }
+        state = State.IDLE;
     }
 
     public void setBusy() {
-        if (state != State.BUSY) {
-            state = State.BUSY;
-
-            if (onBusy != null) {
-                onBusy.run();
-            }
-        }
+        state = State.BUSY;
     }
 
-    public State getState() {
-        return state;
+    public boolean isIdle() {
+        return state == State.IDLE;
     }
 
-    public void setOnIdle(Runnable callback) {
-        onIdle = callback;
-    }
-
-    public void setOnBusy(Runnable callback) {
-        onBusy = callback;
+    public boolean isBusy() {
+        return state == State.BUSY;
     }
 }

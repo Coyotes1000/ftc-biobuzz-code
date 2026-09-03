@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
 
 public abstract class Command {
 
-    public enum State { PENDING, RUNNING, FINISHED }
+    public enum State { PENDING, RUNNING, ENDING, FINISHED }
 
     public enum Priority { LOW, MEDIUM, HIGH }
 
@@ -24,8 +24,8 @@ public abstract class Command {
         }
 
         if (state == State.PENDING) {
-            start();
             setRequirementsBusy();
+            start();
             state = State.RUNNING;
         }
 
@@ -33,9 +33,10 @@ public abstract class Command {
             update();
         }
 
-        if (state == State.FINISHED) {
+        if (state == State.ENDING) {
             end();
             setRequirementsIdle();
+            state = State.FINISHED;
         }
 
         return state;
@@ -46,19 +47,27 @@ public abstract class Command {
             return state;
         }
 
+        if (state == State.PENDING) {
+            state = State.FINISHED;
+        }
+
         if (state == State.RUNNING) {
             end();
             setRequirementsIdle();
             state = State.FINISHED;
         }
 
-        if (state == State.PENDING) {
-            end();
-            setRequirementsIdle();
-            state = State.FINISHED;
-        }
-
         return state;
+    }
+
+    public void reset() {
+        if (state == State.FINISHED) {
+            state = State.PENDING;
+        }
+    }
+
+    public boolean isFinished() {
+        return state == State.FINISHED;
     }
 
     public State getState() {

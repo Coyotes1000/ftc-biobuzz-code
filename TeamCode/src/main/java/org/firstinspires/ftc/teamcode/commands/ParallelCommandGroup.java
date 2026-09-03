@@ -11,15 +11,15 @@ public class ParallelCommandGroup extends CommandGroup {
         boolean allCommandsFinished = true;
 
         for (Command command : commands) {
-            State currentState = command.run();
+            command.run();
 
-            if (currentState != State.FINISHED) {
+            if (!command.isFinished()) {
                 allCommandsFinished = false;
             }
         }
 
         if (allCommandsFinished) {
-            state = State.FINISHED;
+            state = State.ENDING;
         }
     }
 
@@ -28,8 +28,7 @@ public class ParallelCommandGroup extends CommandGroup {
         if (state == State.RUNNING) {
             for (Command command : commands) {
                 command.cancel();
-            } 
+            }
         }
     }
-
 }
