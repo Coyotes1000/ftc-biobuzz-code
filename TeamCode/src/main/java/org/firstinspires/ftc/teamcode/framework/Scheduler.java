@@ -27,6 +27,10 @@ public final class Scheduler {
             return;
         }
 
+        if (command.isFinished()) {
+            command.reset();
+        }
+
         int i = pendingSize - 1;
 
         while (i >= 0 && compareCommands(command, pendingCommands[i]) < 0) {
