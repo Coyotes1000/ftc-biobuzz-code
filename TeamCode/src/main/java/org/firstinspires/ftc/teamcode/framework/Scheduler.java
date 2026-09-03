@@ -123,9 +123,9 @@ public final class Scheduler {
         for (int i = 0; i < selectedSize; i++) {
             Command command = selectedCommands[i];
 
-            Command.State currentState = command.run();
+            command.run();
 
-            if (currentState != Command.State.FINISHED) {
+            if (!command.isFinished()) {
                 schedule(command);
             }
         }
