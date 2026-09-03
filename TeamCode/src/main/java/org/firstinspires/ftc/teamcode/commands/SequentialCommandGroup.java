@@ -2,22 +2,27 @@ package org.firstinspires.ftc.teamcode.commands;
 
 public class SequentialCommandGroup extends CommandGroup {
 
-    protected int index = 0;
+    protected int index;
 
     public SequentialCommandGroup(Priority priority, Command... commands) {
         super(priority, commands);
     }
 
     @Override
-    public void update() {
-        State currentState = commands[index].run();
+    public void start () {
+        index = 0;
+    }
 
-        if (currentState == Command.State.FINISHED) {
+    @Override
+    public void update() {
+        commands[index].run();
+
+        if (commands[index].isFinished()) {
             index++;
         }
 
         if (index >= commands.length) {
-            state = State.FINISHED;
+            state = State.ENDING;
         }
     }
 
