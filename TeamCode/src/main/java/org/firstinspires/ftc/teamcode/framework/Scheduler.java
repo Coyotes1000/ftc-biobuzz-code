@@ -23,10 +23,6 @@ public final class Scheduler {
     public Scheduler() {}
 
     public void schedule(Command command) {
-        if (command == null || pendingSize >= pendingCommands.length) {
-            return;
-        }
-
         if (command.isFinished()) {
             command.reset();
         }
