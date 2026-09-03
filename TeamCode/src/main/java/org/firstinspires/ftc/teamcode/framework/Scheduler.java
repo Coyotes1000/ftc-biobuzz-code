@@ -23,11 +23,20 @@ public final class Scheduler {
     public Scheduler() {}
 
     public synchronized void schedule(Command command) {
-        pendingCommands.add(command);
+        int size = pendingCommands.size();
+        int insertionIndex = pendingCommands.size();
+
+        for (int i = 0; i < size; i++) {
+            if (COMPARATOR.compare(command, pendingCommands.get(i)) < 0) {
+                insertionIndex = i;
+                break;
+            }
+        }
+
+        pendingCommands.add(insertionIndex, command);
     }
 
     public synchronized void run() {
-        pendingCommands.sort(COMPARATOR);
         claimedSubsystems.clear();
 
         filterPendingCommands();
@@ -61,7 +70,11 @@ public final class Scheduler {
     }
 
     private void filterPendingCommands() {
-        for (Command command : pendingCommands) {
+        int size = pendingCommands.size();
+
+        for (int i = 0; i < size; i++) {
+            Command command = pendingCommands.get(i);
+
             if (hasSubsystemConflict(command)) {
                 rejectedCommands.add(command);
                 continue;
@@ -76,13 +89,19 @@ public final class Scheduler {
     }
 
     private void cancelRejectedCommands() {
-        for (Command command : rejectedCommands) {
-            command.cancel();
+        int size = rejectedCommands.size();
+
+        for (int i = 0; i < size; i++) {
+            rejectedCommands.get(i).cancel();
         }
     }
 
     private void runSelectedCommands() {
-        for (Command command : selectedCommands) {
+        int size = selectedCommands.size();
+
+        for (int i = 0; i < size; i++) {
+            Command command = selectedCommands.get(i);
+            
             Command.State currentState = command.run();
 
             if (currentState != Command.State.FINISHED) {
