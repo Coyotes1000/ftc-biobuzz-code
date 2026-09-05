@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.framework;
 
+import java.util.Arrays;
+
 import org.firstinspires.ftc.teamcode.commands.Command;
 import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
 
@@ -9,16 +11,16 @@ public final class Scheduler {
     private static final int MAX_COMMANDS = 32;
 
     private final Subsystem[] claimedSubsystems = new Subsystem[MAX_SUBSYSTEMS];
-    private int claimedSize = 0;
+    private int claimedSubsystemsCount = 0;
 
     private final Command[] pendingCommands = new Command[MAX_COMMANDS];
-    private int pendingSize = 0;
+    private int pendingCommandsCount = 0;
 
     private final Command[] selectedCommands = new Command[MAX_COMMANDS];
-    private int selectedSize = 0;
+    private int selectedCommandsCount = 0;
 
     private final Command[] rejectedCommands = new Command[MAX_COMMANDS];
-    private int rejectedSize = 0;
+    private int rejectedCommandsCount = 0;
 
     public Scheduler() {}
 
@@ -30,62 +32,60 @@ public final class Scheduler {
         insertPendingSorted(command);
     }
 
-    private void insertPendingSorted(Command command) {
-        int i = pendingSize - 1;
-
-        while (i >= 0 && compareCommands(command, pendingCommands[i])) {
-            pendingCommands[i + 1] = pendingCommands[i--];
-        }
-
-        pendingCommands[i + 1] = command;
-        pendingSize++;
-    }
-
     public void run() {
-        selectedSize = 0;
-        rejectedSize = 0;
-        claimedSize = 0;
-
         filterPendingCommands();
-
-        pendingSize = 0;
-
         cancelRejectedCommands();
         runSelectedCommands();
     }
 
     public void clear() {
         cancelSelectedCommands();
+        clearArrays();
+    }
 
-        for (int i = 0; i < MAX_COMMANDS; i++) {
-            pendingCommands[i] = null;
-            selectedCommands[i] = null;
-            rejectedCommands[i] = null;
+    private void insertPendingSorted(Command command) {
+        int i = pendingCommandsCount - 1;
+
+        while (i >= 0 && compareCommands(command, pendingCommands[i])) {
+            pendingCommands[i + 1] = pendingCommands[i--];
         }
 
-        for (int i = 0; i < MAX_SUBSYSTEMS; i++) {
-            claimedSubsystems[i] = null;
+        pendingCommands[i + 1] = command;
+        pendingCommandsCount++;
+    }
+
+    private static boolean compareCommands(Command a, Command b) {
+        int priorityCompare = a.getPriority().compareTo(b.getPriority());
+
+        if (priorityCompare != 0) {
+            return priorityCompare > 0;
         }
 
-        pendingSize = 0;
-        selectedSize = 0;
-        rejectedSize = 0;
-        claimedSize = 0;
+        int stateCompare = a.getState().compareTo(b.getState());
+
+        return stateCompare > 0;
     }
 
     private void filterPendingCommands() {
-        for (int i = 0; i < pendingSize; i++) {
+        clearClaimedSubsystemsCount();
+
+        clearSelectedCommandsCount();
+        clearRejectedCommandsCount();
+
+        for (int i = 0; i < pendingCommandsCount; i++) {
             Command command = pendingCommands[i];
 
             if (hasSubsystemConflict(command)) {
-                rejectedCommands[rejectedSize++] = command;
+                rejectedCommands[rejectedCommandsCount++] = command;
                 continue;
             }
 
-            selectedCommands[selectedSize++] = command;
+            selectedCommands[selectedCommandsCount++] = command;
 
             claimRequirements(command);
         }
+
+        clearPendingCommandsCount();
     }
 
     private boolean hasSubsystemConflict(Command command) {
@@ -99,7 +99,7 @@ public final class Scheduler {
     }
 
     private boolean isSubsystemClaimed(Subsystem subsystem) {
-        for (int i = 0; i < claimedSize; i++) {
+        for (int i = 0; i < claimedSubsystemsCount; i++) {
             if (subsystem == claimedSubsystems[i]) {
                 return true;
             }
@@ -110,24 +110,24 @@ public final class Scheduler {
 
     private void claimRequirements(Command command) {
         for (Subsystem subsystem : command.requirements) {
-            claimedSubsystems[claimedSize++] = subsystem;
+            claimedSubsystems[claimedSubsystemsCount++] = subsystem;
         }
     }
 
     private void cancelRejectedCommands() {
-        for (int i = 0; i < rejectedSize; i++) {
+        for (int i = 0; i < rejectedCommandsCount; i++) {
             rejectedCommands[i].cancel();
         }
     }
 
     private void cancelSelectedCommands() {
-        for (int i = 0; i < selectedSize; i++) {
+        for (int i = 0; i < selectedCommandsCount; i++) {
             selectedCommands[i].cancel();
         }
     }
 
     private void runSelectedCommands() {
-        for (int i = 0; i < selectedSize; i++) {
+        for (int i = 0; i < selectedCommandsCount; i++) {
             Command command = selectedCommands[i];
 
             command.run();
@@ -138,15 +138,37 @@ public final class Scheduler {
         }
     }
 
-    private static boolean compareCommands(Command a, Command b) {
-        int priorityCompare = a.getPriority().compareTo(b.getPriority());
+    private void clearArrays() {
+        Arrays.fill(claimedSubsystems, null);
 
-        if (priorityCompare != 0) {
-            return priorityCompare > 0;
-        }
+        Arrays.fill(pendingCommands, null);
+        Arrays.fill(selectedCommands, null);
+        Arrays.fill(rejectedCommands, null);
 
-        int stateCompare = a.getState().compareTo(b.getState());
+        clearArrayCounts();
+    }
 
-        return stateCompare > 0;
+    private void clearArrayCounts() {
+        clearClaimedSubsystemsCount();
+
+        clearPendingCommandsCount();
+        clearSelectedCommandsCount();
+        clearRejectedCommandsCount();
+    }
+
+    private void clearClaimedSubsystemsCount() {
+        claimedSubsystemsCount = 0;
+    }
+
+    private void clearPendingCommandsCount() {
+        pendingCommandsCount = 0;
+    }
+
+    private void clearSelectedCommandsCount() {
+        selectedCommandsCount = 0;
+    }
+
+    private void clearRejectedCommandsCount() {
+        rejectedCommandsCount = 0;
     }
 }
