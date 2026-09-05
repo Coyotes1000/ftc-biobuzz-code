@@ -89,18 +89,8 @@ public final class Scheduler {
     }
 
     private boolean hasSubsystemConflict(Command command) {
-        for (Subsystem subsystem : command.requirements) {
-            if (isSubsystemClaimed(subsystem)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private boolean isSubsystemClaimed(Subsystem subsystem) {
         for (int i = 0; i < claimedSubsystemsCount; i++) {
-            if (subsystem == claimedSubsystems[i]) {
+            if (command.requires(claimedSubsystems[i])) {
                 return true;
             }
         }
@@ -109,7 +99,7 @@ public final class Scheduler {
     }
 
     private void claimRequirements(Command command) {
-        for (Subsystem subsystem : command.requirements) {
+        for (Subsystem subsystem : command.getRequirements()) {
             claimedSubsystems[claimedSubsystemsCount++] = subsystem;
         }
     }

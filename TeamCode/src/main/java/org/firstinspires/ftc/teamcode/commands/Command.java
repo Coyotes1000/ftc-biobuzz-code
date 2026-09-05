@@ -8,7 +8,7 @@ public abstract class Command {
 
     public enum Priority { LOW, MEDIUM, HIGH }
 
-    public final Subsystem[] requirements;
+    protected final Subsystem[] requirements;
 
     protected State state = State.PENDING;
 
@@ -76,6 +76,20 @@ public abstract class Command {
 
     public Priority getPriority() {
         return priority;
+    }
+
+    public Subsystem[] getRequirements () {
+        return requirements;
+    }
+
+    public boolean requires (Subsystem subsystem) {
+        for (Subsystem requirement : requirements) {
+            if (requirement == subsystem) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected void start() {}
