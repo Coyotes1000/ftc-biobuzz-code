@@ -30,7 +30,7 @@ public final class Scheduler {
         insertPendingSorted(command);
     }
 
-    private void insertPendingSorted (Command command) {
+    private void insertPendingSorted(Command command) {
         int i = pendingSize - 1;
 
         while (i >= 0 && compareCommands(command, pendingCommands[i])) {
@@ -55,9 +55,7 @@ public final class Scheduler {
     }
 
     public void clear() {
-        for (int i = 0; i < selectedSize; i++) {
-            selectedCommands[i].cancel();
-        }
+        cancelSelectedCommands();
 
         for (int i = 0; i < MAX_COMMANDS; i++) {
             pendingCommands[i] = null;
@@ -110,7 +108,7 @@ public final class Scheduler {
         return false;
     }
 
-    private void claimRequirements (Command command) {
+    private void claimRequirements(Command command) {
         for (Subsystem subsystem : command.requirements) {
             claimedSubsystems[claimedSize++] = subsystem;
         }
@@ -119,6 +117,12 @@ public final class Scheduler {
     private void cancelRejectedCommands() {
         for (int i = 0; i < rejectedSize; i++) {
             rejectedCommands[i].cancel();
+        }
+    }
+
+    private void cancelSelectedCommands() {
+        for (int i = 0; i < selectedSize; i++) {
+            selectedCommands[i].cancel();
         }
     }
 
