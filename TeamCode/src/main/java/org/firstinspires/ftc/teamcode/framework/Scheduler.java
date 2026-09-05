@@ -83,9 +83,7 @@ public final class Scheduler {
 
             selectedCommands[selectedSize++] = command;
 
-            for (Subsystem subsystem : command.requirements) {
-                claimedSubsystems[claimedSize++] = subsystem;
-            }
+            claimRequirements(command);
         }
     }
 
@@ -107,6 +105,12 @@ public final class Scheduler {
         }
 
         return false;
+    }
+
+    private void claimRequirements (Command command) {
+        for (Subsystem subsystem : command.requirements) {
+            claimedSubsystems[claimedSize++] = subsystem;
+        }
     }
 
     private void cancelRejectedCommands() {
