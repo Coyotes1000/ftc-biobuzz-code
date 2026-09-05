@@ -37,5 +37,4 @@ public abstract class CommandGroup extends Command {
 
         return totalRequirements.toArray(new Subsystem[0]);
     }
-
 }
