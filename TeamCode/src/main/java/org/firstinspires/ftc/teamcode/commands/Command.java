@@ -78,11 +78,11 @@ public abstract class Command {
         return priority;
     }
 
-    public Subsystem[] getRequirements () {
+    public Subsystem[] getRequirements() {
         return requirements;
     }
 
-    public boolean requires (Subsystem subsystem) {
+    public boolean requires(Subsystem subsystem) {
         for (Subsystem requirement : requirements) {
             if (requirement == subsystem) {
                 return true;
