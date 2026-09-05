@@ -27,11 +27,14 @@ public final class Scheduler {
             command.reset();
         }
 
+        insertPendingSorted(command);
+    }
+
+    private void insertPendingSorted (Command command) {
         int i = pendingSize - 1;
 
-        while (i >= 0 && compareCommands(command, pendingCommands[i]) < 0) {
-            pendingCommands[i + 1] = pendingCommands[i];
-            i--;
+        while (i >= 0 && compareCommands(command, pendingCommands[i])) {
+            pendingCommands[i + 1] = pendingCommands[i--];
         }
 
         pendingCommands[i + 1] = command;
@@ -131,15 +134,15 @@ public final class Scheduler {
         }
     }
 
-    private static int compareCommands(Command a, Command b) {
-        int priorityCompare = b.getPriority().compareTo(a.getPriority());
+    private static boolean compareCommands(Command a, Command b) {
+        int priorityCompare = a.getPriority().compareTo(b.getPriority());
 
         if (priorityCompare != 0) {
-            return priorityCompare;
+            return priorityCompare > 0;
         }
 
-        int stateCompare = b.getState().compareTo(a.getState());
+        int stateCompare = a.getState().compareTo(b.getState());
 
-        return stateCompare;
+        return stateCompare > 0;
     }
 }
