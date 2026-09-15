@@ -30,12 +30,11 @@ public abstract class CommandGroup extends Command {
         Set<Subsystem> totalRequirements = new HashSet<>();
 
         for (Command command : commands) {
-            for (Subsystem requirement : command.requirements) {
+            for (Subsystem requirement : command.getRequirements()) {
                 totalRequirements.add(requirement);
             }
         }
 
         return totalRequirements.toArray(new Subsystem[0]);
     }
-
 }
