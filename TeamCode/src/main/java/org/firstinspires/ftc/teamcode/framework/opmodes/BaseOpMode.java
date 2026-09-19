@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.robot.Robot;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-public class BaseOpMode extends LinearOpMode {
+public abstract class BaseOpMode extends LinearOpMode {
 
     protected Robot robot;
 
@@ -12,7 +12,7 @@ public class BaseOpMode extends LinearOpMode {
 
     @Override
     public final void runOpMode() {
-        robot = new Robot(hardwareMap, gamepad1);
+        robot = new Robot(hardwareMap);
         onInit();
 
         while (opModeInInit()) {
@@ -22,7 +22,7 @@ public class BaseOpMode extends LinearOpMode {
             robot.updateTelemetry(telemetry);
         }
 
-        robot.clearCommands();
+        robot.clear();
         onStart();
 
         while (opModeIsActive()) {

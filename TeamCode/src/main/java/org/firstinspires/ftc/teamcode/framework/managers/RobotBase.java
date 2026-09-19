@@ -11,7 +11,7 @@ public abstract class RobotBase {
 
     public void updateSubsystems() {}
 
-    public void scheduleCommand(Command command) {
+    public void schedule(Command command) {
         scheduler.schedule(command);
     }
 
@@ -19,7 +19,7 @@ public abstract class RobotBase {
         scheduler.run();
     }
 
-    public void clearCommands() {
+    public void clear() {
         scheduler.clear();
     }
 

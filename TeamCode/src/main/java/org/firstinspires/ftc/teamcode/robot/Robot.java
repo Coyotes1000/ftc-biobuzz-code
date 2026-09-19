@@ -1,22 +1,19 @@
 package org.firstinspires.ftc.teamcode.robot;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.framework.managers.RobotBase;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
 public class Robot extends RobotBase {
 
-    private final Drivetrain drivetrain;
-    private final Gamepad gamepad;
+    public final Drivetrain drivetrain;
 
-    public Robot(HardwareMap hardwareMap, Gamepad gamepad) {
+    public Robot(HardwareMap hardwareMap) {
         DcMotor frontLeftDrive = hardwareMap.get(DcMotor.class, "Front_Left_Drive");
         DcMotor frontRightDrive = hardwareMap.get(DcMotor.class, "Front_Left_Drive");
         DcMotor backLeftDrive = hardwareMap.get(DcMotor.class, "Front_Left_Drive");
@@ -37,16 +34,10 @@ public class Robot extends RobotBase {
         drivetrain = new Drivetrain(frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive, imu);
 
         drivetrain.setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        this.gamepad = gamepad;
     }
 
     @Override
-    public void updateSubsystems() {
-        if (drivetrain.isIdle()) {
-            scheduler.schedule(new DriveCommand(drivetrain, gamepad));
-        }
-    }
+    public void updateSubsystems() {}
 
     @Override
     public void updateTelemetry(Telemetry telemetry) {}
