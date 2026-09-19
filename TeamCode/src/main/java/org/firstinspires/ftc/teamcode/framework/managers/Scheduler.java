@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.framework;
+package org.firstinspires.ftc.teamcode.framework.managers;
 
 import java.util.Arrays;
 
-import org.firstinspires.ftc.teamcode.commands.Command;
-import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
+import org.firstinspires.ftc.teamcode.framework.commands.Command;
+import org.firstinspires.ftc.teamcode.framework.subsystems.Subsystem;
 
 public final class Scheduler {
 
@@ -25,11 +25,22 @@ public final class Scheduler {
     public Scheduler() {}
 
     public void schedule(Command command) {
-        if (command.isFinished()) {
-            command.reset();
+        for (int i = 0; i < pendingCommandsCount; i++) {
+            if (pendingCommands[i] == command) return;
         }
 
-        insertPendingSorted(command);
+        if (command.isFinished()) return;
+        
+        if (pendingCommandsCount >= MAX_COMMANDS) throw new RuntimeException("Scheduled too many Commands.");
+
+        int j = pendingCommandsCount - 1;
+
+        while (j >= 0 && compareCommands(command, pendingCommands[j])) {
+            pendingCommands[j + 1] = pendingCommands[j--];
+        }
+
+        pendingCommands[j + 1] = command;
+        pendingCommandsCount++;
     }
 
     public void run() {
@@ -41,17 +52,6 @@ public final class Scheduler {
     public void clear() {
         cancelSelectedCommands();
         clearArrays();
-    }
-
-    private void insertPendingSorted(Command command) {
-        int i = pendingCommandsCount - 1;
-
-        while (i >= 0 && compareCommands(command, pendingCommands[i])) {
-            pendingCommands[i + 1] = pendingCommands[i--];
-        }
-
-        pendingCommands[i + 1] = command;
-        pendingCommandsCount++;
     }
 
     private static boolean compareCommands(Command a, Command b) {
@@ -100,6 +100,8 @@ public final class Scheduler {
 
     private void claimRequirements(Command command) {
         for (Subsystem subsystem : command.getRequirements()) {
+            if (claimedSubsystemsCount >= MAX_SUBSYSTEMS) throw new RuntimeException("Claimed too many Subsystems.");
+
             claimedSubsystems[claimedSubsystemsCount++] = subsystem;
         }
     }

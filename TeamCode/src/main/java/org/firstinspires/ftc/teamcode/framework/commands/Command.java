@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.commands;
+package org.firstinspires.ftc.teamcode.framework.commands;
 
-import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
+import org.firstinspires.ftc.teamcode.framework.subsystems.Subsystem;
 
 public abstract class Command {
 
@@ -58,12 +58,6 @@ public abstract class Command {
         }
 
         return state;
-    }
-
-    public void reset() {
-        if (state == State.FINISHED) {
-            state = State.PENDING;
-        }
     }
 
     public boolean isFinished() {

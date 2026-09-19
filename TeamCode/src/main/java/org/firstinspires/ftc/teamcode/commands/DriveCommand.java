@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import org.firstinspires.ftc.teamcode.framework.commands.Command;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -19,14 +20,17 @@ public class DriveCommand extends Command {
         this.priority = Priority.LOW;
     }
 
+    @Override 
     protected void start() {
         drivetrain.setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
+    @Override
     protected void update() {
         drivetrain.drive(-gamepad.left_stick_y, gamepad.left_stick_x, gamepad.right_stick_x);
     }
 
+    @Override
     protected void end() {
         drivetrain.stopMotors();
     }
