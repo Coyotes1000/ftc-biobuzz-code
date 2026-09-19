@@ -37,7 +37,7 @@ public class Drivetrain extends Subsystem {
         imu.resetYaw();
     }
 
-    public void drive(double forward, double right, double rotate) {
+    public void drive(float forward, float right, float rotate) {
         double theta = Math.atan2(forward, right);
         double r = Math.hypot(right, forward);
 
