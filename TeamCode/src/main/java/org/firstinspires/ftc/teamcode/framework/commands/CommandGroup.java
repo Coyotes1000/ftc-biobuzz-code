@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.framework.commands;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.firstinspires.ftc.teamcode.framework.subsystems.Subsystem;
+
 public abstract class CommandGroup extends Command {
 
     protected final Command[] commands;

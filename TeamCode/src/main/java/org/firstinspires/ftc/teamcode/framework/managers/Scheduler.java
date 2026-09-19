@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.framework.managers;
 
+import java.util.Arrays;
+
+import org.firstinspires.ftc.teamcode.framework.commands.Command;
+import org.firstinspires.ftc.teamcode.framework.subsystems.Subsystem;
+
 public final class Scheduler {
 
     private static final int MAX_SUBSYSTEMS = 16;

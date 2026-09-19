@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.framework.commands;
 
+import org.firstinspires.ftc.teamcode.framework.subsystems.Subsystem;
+
 public abstract class Command {
 
     public enum State { PENDING, RUNNING, ENDING, FINISHED }
