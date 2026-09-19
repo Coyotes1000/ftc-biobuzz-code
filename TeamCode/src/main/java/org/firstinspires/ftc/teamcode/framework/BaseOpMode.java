@@ -10,7 +10,7 @@ public abstract class BaseOpMode extends LinearOpMode {
 
     @Override
     public final void runOpMode() {
-        robot = new Robot(hardwareMap);
+        robot = new Robot(hardwareMap, gamepad1);
         onInit();
 
         while (opModeInInit()) {
