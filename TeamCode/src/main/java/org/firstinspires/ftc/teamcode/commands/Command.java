@@ -94,14 +94,12 @@ public abstract class Command {
 
     private void setRequirementsBusy() {
         for (Subsystem requirement : requirements) {
-            if (requirement == null) continue;
             requirement.setBusy();
         }
     }
 
     private void setRequirementsIdle() {
         for (Subsystem requirement : requirements) {
-            if (requirement == null) continue;
             requirement.setIdle();
         }
     }

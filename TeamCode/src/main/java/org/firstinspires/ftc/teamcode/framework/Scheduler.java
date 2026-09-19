@@ -25,11 +25,11 @@ public final class Scheduler {
     public Scheduler() {}
 
     public void schedule(Command command) {
-        if (command == null || command.isFinished()) return;
-
         for (int i = 0; i < pendingCommandsCount; i++) {
             if (pendingCommands[i] == command) return;
         }
+
+        if (command.isFinished()) return;
         
         if (pendingCommandsCount >= MAX_COMMANDS) throw new RuntimeException("Scheduled too many Commands.");
 
@@ -100,9 +100,6 @@ public final class Scheduler {
 
     private void claimRequirements(Command command) {
         for (Subsystem subsystem : command.getRequirements()) {
-
-            if (subsystem == null) continue;
-
             if (claimedSubsystemsCount >= MAX_SUBSYSTEMS) throw new RuntimeException("Claimed too many Subsystems.");
 
             claimedSubsystems[claimedSubsystemsCount++] = subsystem;
