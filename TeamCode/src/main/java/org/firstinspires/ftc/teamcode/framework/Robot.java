@@ -37,7 +37,7 @@ public final class Robot {
         imu.initialize(new IMU.Parameters(orientationOnRobot));
 
         drivetrain = new Drivetrain(frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive, imu);
-        
+
         drivetrain.setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         this.gamepad = gamepad;

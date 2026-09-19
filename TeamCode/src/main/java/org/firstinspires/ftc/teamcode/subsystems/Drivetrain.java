@@ -65,4 +65,9 @@ public class Drivetrain extends Subsystem {
         backRight.setPower(maxSpeed * (backRightPower / maxPower));
     }
 
+    public void stopMotors() {
+        for (int i = 0; i < motors.length; i++) {
+            motors[i].setPower(0);
+        }
+    }
 }
