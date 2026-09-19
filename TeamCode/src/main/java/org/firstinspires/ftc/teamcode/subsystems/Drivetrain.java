@@ -1,0 +1,68 @@
+package org.firstinspires.ftc.teamcode.subsystems;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.IMU;
+
+public class Drivetrain extends Subsystem {
+
+    public final DcMotor frontLeft;
+    public final DcMotor frontRight;
+    public final DcMotor backLeft;
+    public final DcMotor backRight;
+
+    public final DcMotor[] motors;
+
+    public final IMU imu;
+
+    public Drivetrain(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight, IMU imu) {
+        this.frontLeft = frontLeft;
+        this.frontRight = frontRight;
+        this.backLeft = backLeft;
+        this.backRight = backRight;
+
+        this.motors = new DcMotor[] { this.frontLeft, this.frontRight, this.backLeft, this.backRight };
+
+        this.imu = imu;
+    }
+
+    public void setMotorModes(DcMotor.RunMode runMode) {
+        for (int i = 0; i < motors.length; i++) {
+            motors[i].setMode(runMode);
+        }
+    }
+
+    public void resetAngle() {
+        imu.resetYaw();
+    }
+
+    public void drive(double forward, double right, double rotate) {
+        double theta = Math.atan2(forward, right);
+        double r = Math.hypot(right, forward);
+
+        theta = AngleUnit.normalizeRadians(theta - imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+
+        double newForward = r * Math.sin(theta);
+        double newRight = r * Math.cos(theta);
+
+        double frontLeftPower = newForward + newRight + rotate;
+        double frontRightPower = newForward - newRight - rotate;
+        double backLeftPower = newForward + newRight - rotate;
+        double backRightPower = newForward - newRight + rotate;
+
+        double maxPower = 1.0;
+        double maxSpeed = 0.5;
+
+        maxPower = Math.max(maxPower, Math.abs(frontLeftPower));
+        maxPower = Math.max(maxPower, Math.abs(frontRightPower));
+        maxPower = Math.max(maxPower, Math.abs(backLeftPower));
+        maxPower = Math.max(maxPower, Math.abs(backRightPower));
+
+        frontLeft.setPower(maxSpeed * (frontLeftPower / maxPower));
+        frontRight.setPower(maxSpeed * (frontRightPower / maxPower));
+        backLeft.setPower(maxSpeed * (backLeftPower / maxPower));
+        backRight.setPower(maxSpeed * (backRightPower / maxPower));
+    }
+
+}
