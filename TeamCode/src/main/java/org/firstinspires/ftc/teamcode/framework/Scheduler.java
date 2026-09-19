@@ -25,7 +25,22 @@ public final class Scheduler {
     public Scheduler() {}
 
     public void schedule(Command command) {
-        insertPendingSorted(command);
+        if (command == null || command.isFinished()) throw new RuntimeException("Scheduled bad Command.");
+        
+        if (pendingCommandsCount >= MAX_COMMANDS) throw new RuntimeException("Scheduled too many Commands.");;
+
+        for (int i = 0; i < pendingCommandsCount; i++) {
+            if (pendingCommands[i] == command) throw new RuntimeException("Scheduled duplicate Command.");
+        }
+
+        int j = pendingCommandsCount - 1;
+
+        while (j >= 0 && compareCommands(command, pendingCommands[j])) {
+            pendingCommands[j + 1] = pendingCommands[j--];
+        }
+
+        pendingCommands[j + 1] = command;
+        pendingCommandsCount++;
     }
 
     public void run() {
@@ -37,17 +52,6 @@ public final class Scheduler {
     public void clear() {
         cancelSelectedCommands();
         clearArrays();
-    }
-
-    private void insertPendingSorted(Command command) {
-        int i = pendingCommandsCount - 1;
-
-        while (i >= 0 && compareCommands(command, pendingCommands[i])) {
-            pendingCommands[i + 1] = pendingCommands[i--];
-        }
-
-        pendingCommands[i + 1] = command;
-        pendingCommandsCount++;
     }
 
     private static boolean compareCommands(Command a, Command b) {
