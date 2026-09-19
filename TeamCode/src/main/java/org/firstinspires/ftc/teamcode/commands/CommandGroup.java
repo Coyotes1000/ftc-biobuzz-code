@@ -21,7 +21,10 @@ public abstract class CommandGroup extends Command {
         Set<Subsystem> totalRequirements = new HashSet<>();
 
         for (Command command : commands) {
+            if (command == null) continue;
+
             for (Subsystem requirement : command.getRequirements()) {
+                if (requirement == null) continue; 
                 totalRequirements.add(requirement);
             }
         }
