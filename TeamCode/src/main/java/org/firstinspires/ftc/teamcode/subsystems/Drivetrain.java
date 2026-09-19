@@ -7,14 +7,14 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 public class Drivetrain extends Subsystem {
 
-    public final DcMotor frontLeft;
-    public final DcMotor frontRight;
-    public final DcMotor backLeft;
-    public final DcMotor backRight;
+    private final DcMotor frontLeft;
+    private final DcMotor frontRight;
+    private final DcMotor backLeft;
+    private final DcMotor backRight;
 
-    public final DcMotor[] motors;
+    private final DcMotor[] motors;
 
-    public final IMU imu;
+    private final IMU imu;
 
     public Drivetrain(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight, IMU imu) {
         this.frontLeft = frontLeft;

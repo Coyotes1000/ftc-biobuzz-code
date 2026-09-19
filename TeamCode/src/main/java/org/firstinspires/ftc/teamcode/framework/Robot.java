@@ -28,12 +28,14 @@ public final class Robot {
 
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
         RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
-
+        
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
 
         imu.initialize(new IMU.Parameters(orientationOnRobot));
 
         drivetrain = new Drivetrain(frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive, imu);
+        
+        drivetrain.setMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void updateSubsystems() {}
