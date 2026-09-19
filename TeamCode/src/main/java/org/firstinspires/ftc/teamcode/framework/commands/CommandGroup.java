@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.framework.commands;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays;
 
 import org.firstinspires.ftc.teamcode.framework.subsystems.Subsystem;
 
 public abstract class CommandGroup extends Command {
+
+    private static final int MAX_SUBSYSTEMS = 16;
 
     protected final Command[] commands;
 
@@ -18,14 +19,27 @@ public abstract class CommandGroup extends Command {
     }
 
     private static Subsystem[] collectRequirements(Command... commands) {
-        Set<Subsystem> totalRequirements = new HashSet<>();
+        Subsystem[] totalRequirements = new Subsystem[MAX_SUBSYSTEMS];
+
+        int totalRequirementsCount = 0;
 
         for (Command command : commands) {
             for (Subsystem requirement : command.getRequirements()) {
-                totalRequirements.add(requirement);
+                boolean uniqueRequirement = true;
+
+                for (int i = 0; i < totalRequirementsCount; i++) {
+                    if (totalRequirements[i] == requirement) {
+                        uniqueRequirement = false;
+                        break;
+                    }
+                }
+
+                if (uniqueRequirement) {
+                    totalRequirements[totalRequirementsCount++] = requirement;
+                }
             }
         }
 
-        return totalRequirements.toArray(new Subsystem[0]);
+        return Arrays.copyOf(totalRequirements, totalRequirementsCount);
     }
 }
