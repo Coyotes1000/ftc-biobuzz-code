@@ -25,10 +25,6 @@ public final class Scheduler {
     public Scheduler() {}
 
     public void schedule(Command command) {
-        if (command.isFinished()) {
-            command.reset();
-        }
-
         insertPendingSorted(command);
     }
 

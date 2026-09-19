@@ -60,12 +60,6 @@ public abstract class Command {
         return state;
     }
 
-    public void reset() {
-        if (state == State.FINISHED) {
-            state = State.PENDING;
-        }
-    }
-
     public boolean isFinished() {
         return state == State.FINISHED;
     }
