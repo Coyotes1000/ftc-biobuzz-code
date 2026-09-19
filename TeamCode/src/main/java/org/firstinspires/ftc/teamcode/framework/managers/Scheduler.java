@@ -1,9 +1,4 @@
-package org.firstinspires.ftc.teamcode.framework;
-
-import java.util.Arrays;
-
-import org.firstinspires.ftc.teamcode.commands.Command;
-import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
+package org.firstinspires.ftc.teamcode.framework.managers;
 
 public final class Scheduler {
 

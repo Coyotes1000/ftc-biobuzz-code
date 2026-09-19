@@ -1,10 +1,5 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
-
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
-
 public class DriveCommand extends Command {
 
     private final Drivetrain drivetrain;

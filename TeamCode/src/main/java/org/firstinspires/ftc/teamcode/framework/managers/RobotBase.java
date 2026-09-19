@@ -1,24 +1,13 @@
-package org.firstinspires.ftc.teamcode.framework;
+package org.firstinspires.ftc.teamcode.framework.managers;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.commands.Command;
-import org.firstinspires.ftc.teamcode.commands.DriveCommand;
-import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
-
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
-
-public final class Robot {
+public abstract class RobotBase {
 
     private final Scheduler scheduler = new Scheduler();
 
     private final Drivetrain drivetrain;
     private final Gamepad gamepad;
 
-    public Robot(HardwareMap hardwareMap, Gamepad gamepad) {
+    public RobotBase(HardwareMap hardwareMap, Gamepad gamepad) {
         DcMotor frontLeftDrive = hardwareMap.get(DcMotor.class, "Front_Left_Drive");
         DcMotor frontRightDrive = hardwareMap.get(DcMotor.class, "Front_Left_Drive");
         DcMotor backLeftDrive = hardwareMap.get(DcMotor.class, "Front_Left_Drive");

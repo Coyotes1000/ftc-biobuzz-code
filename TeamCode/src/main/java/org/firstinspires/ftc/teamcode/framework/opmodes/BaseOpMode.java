@@ -1,8 +1,6 @@
-package org.firstinspires.ftc.teamcode.framework;
+package org.firstinspires.ftc.teamcode.framework.opmodes;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-public abstract class BaseOpMode extends LinearOpMode {
+public class BaseOpMode extends LinearOpMode {
 
     protected Robot robot;
 

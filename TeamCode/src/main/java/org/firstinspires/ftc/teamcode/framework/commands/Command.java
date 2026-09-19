@@ -1,6 +1,4 @@
-package org.firstinspires.ftc.teamcode.commands;
-
-import org.firstinspires.ftc.teamcode.subsystems.Subsystem;
+package org.firstinspires.ftc.teamcode.framework.commands;
 
 public abstract class Command {
 
